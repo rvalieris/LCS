@@ -14,7 +14,7 @@ rule minimap2:
 	output: temp('outputs/map/raw/{x}.bam')
 	threads: 8
 	resources: mem_gb=8
-	shell: '/conda/envs/pangolin/bin/minimap2 -t {threads} -ax map-pb --for-only --secondary=no {REF} {input} | samtools view -F256 -F4 -F2048 -h | picard -Xmx{resources.mem_gb}G SortSam I=/dev/stdin O={output} SO=coordinate'
+	shell: 'minimap2 -t {threads} -ax map-pb --for-only --secondary=no {REF} {input} | samtools view -F256 -F4 -F2048 -h | picard -Xmx{resources.mem_gb}G SortSam I=/dev/stdin O={output} SO=coordinate'
 
 rule sam_fix:
 	input: 'outputs/map/raw/{x}.bam'
