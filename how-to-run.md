@@ -38,7 +38,7 @@ listed in the lineages.csv file from pango-designation repo.
 
 You must register on the GISAID website to gain access to these sequences: https://www.gisaid.org/.
 
-The variable `PANGO_DESIGNATIONS_VERSION` on `data/config.py`controls which version of pango-designation to use.
+The variable `PANGO_DESIGNATIONS_VERSION` on `rules/config.py`controls which version of pango-designation to use.
 
 You can run `snakemake --config markers=pango dataset=x -j1 repo` to download the appropriate pango-designation repo to `data/pango-designation`
 
@@ -46,7 +46,7 @@ You can run `snakemake --config markers=pango dataset=x -j1 repo` to download th
 
 This data, gathered by the [UShER](https://github.com/yatisht/usher) team, includes only public sequences, as such they are downloaded by the pipeline automatically.
 
-The variable `PB_VERSION` on `data/config.py` controls which version of ucsc data to use.
+The variable `PB_VERSION` on `rules/config.py` controls which version of UCSC data to use.
 
 3. Use a pre-generated table:
 
