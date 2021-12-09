@@ -35,7 +35,7 @@ conda env create -n lcs -f conda.env.macosx.yaml
 conda activate lcs
 ```
 
-> We have successifuly tested LCS on a MacOS version 11.5.2 with python 3.8 and ray 1.9.0.
+> We have successfully tested LCS on a MacOS version 11.5.2 with python 3.8 and ray 1.9.0.
 
 ## 2. Markers source choice
 
