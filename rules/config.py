@@ -18,6 +18,10 @@ PB_VERSION='2021-08-19'
 PB='data/ucsc-sars-cov-2/public-{}.all.masked.pb.gz'.format(PB_VERSION)
 PB_METADATA='data/ucsc-sars-cov-2/public-{}.metadata.tsv.gz'.format(PB_VERSION)
 
+# primer list for amplicon trimming
+PRIMERS_FA='data/artic_v3_primers.fa'
+primer_trimming = 'primer_trimming' in config and config['primer_trimming']
+
 import os.path
 
 if 'markers' not in config:
@@ -49,3 +53,5 @@ def get_target_markers_table():
 
 def get_target_pools_table():
 	return 'outputs/variants_table/pool_samples_{}.tsv'.format(config['dataset'])
+
+
