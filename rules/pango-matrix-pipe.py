@@ -27,21 +27,35 @@ rule pango_mutect:
 	output: 'outputs/mutect/{x}.vcf.gz'
 	resources: mem_gb=8
 	log: 'outputs/mutect/{x}.log'
-	shell: '''gatk --java-options '-Xmx{resources.mem_gb}G' Mutect2 -R {REF} -O {output} -I {input} --max-reads-per-alignment-start 500 -mnp-dist 0 >{log} 2>&1'''
+	params: jobname='pango_mutect_p1'
+	shell: '''gatk --java-options '-Xmx{resources.mem_gb}G' Mutect2 -R {REF} -O {output} -I {input} --max-reads-per-alignment-start 200 -mnp-dist 0 >{log} 2>&1'''
 
-rule pango_make_sites:
+rule pango_make_sites1:
 	input: expand('outputs/mutect/{x}.vcf.gz', x=get_variant_groups())
-	output: 'outputs/lineage_sites/pango_sites.vcf.gz'
+	output: temp('outputs/lineage_sites/pango_sites.temp.vcf.gz')
+	params: jobname='pango_make_sites1'
+	resources: mem_gb=1
 	shell: 'python scripts/vcf_make_sites.py {SITES_MIN_AF} {input} | bgzip -c > {output} && tabix {output}'
 
 rule pango_mutect_part2:
-	input: bam='outputs/map/fix/{x}.bam', sites='outputs/lineage_sites/pango_sites.vcf.gz'
+	input: bam='outputs/map/fix/{x}.bam', sites='outputs/lineage_sites/pango_sites.temp.vcf.gz'
 	output: 'outputs/mutect_v2/{x}.vcf.gz'
 	resources: mem_gb=8
+	params: jobname='pango_mutect_p2'
 	log: 'outputs/mutect_v2/{x}.log'
-	shell: '''gatk --java-options '-Xmx{resources.mem_gb}G' Mutect2 -R {REF} -O {output} -I {input.bam} --alleles {input.sites} --max-reads-per-alignment-start 500 -mnp-dist 0 >{log} 2>&1'''
+	shell: '''gatk --java-options '-Xmx{resources.mem_gb}G' Mutect2 -R {REF} -O {output} -I {input.bam} --alleles {input.sites} --max-reads-per-alignment-start 200 -mnp-dist 0 >{log} 2>&1'''
 
 rule pango_vcf_to_table:
-	input: sites='outputs/lineage_sites/pango_sites.vcf.gz', vcfs=expand('outputs/mutect_v2/{x}.vcf.gz',x=get_variant_groups())
+	input: vcfs=expand('outputs/mutect_v2/{x}.vcf.gz',x=get_variant_groups())
 	output: tbl='outputs/variants_table/pango-markers-table.tsv'
-	shell: 'python scripts/pango-variants_to_table.py {output.tbl} {input.sites} {input.vcfs}'
+	params: jobname='pango_vcf_to_table'
+	resources: mem_gb=1
+	shell: 'python scripts/pango-variants_to_table.py {output.tbl} {SITES_MIN_AF} {input.vcfs}'
+
+rule pango_make_sites2:
+	input: 'outputs/variants_table/pango-markers-table.tsv'
+	output: 'outputs/lineage_sites/pango_sites.vcf.gz'
+	params: jobname='pango_make_sites2'
+	resources: mem_gb=1
+	shell: 'python scripts/ucsc_make_sites.py {SITES_MIN_AF} {input} | bgzip -c > {output} && tabix {output}'
+

@@ -100,6 +100,10 @@ sample2
 sample3
 ```
 
+If your sequencing data is amplicon, create a fasta file of the primers used and set the variable `PRIMERS_FA`, on `rules/config.py`,
+the primers will be trimmed from the sequences if you set the `primer_trimming=True` option.
+
+
 ## 4. Run the pipeline
 
 To execute the pipeline run the command:
@@ -111,6 +115,8 @@ snakemake --config markers=pango dataset=mypool --cores <C> --resources mem_gb=<
 The `markers` config indicates which markers table you are using (*pango* or *ucsc*) ahd the `dataset` config should match your tags file `data/tags_pool_mypool` describing your samples.
 
 You also need to indicate how many cores and memory you have available to run the analysis, snakemake will parallelize the pipeline accordingly.
+
+If you want to trim primers, also set the option `primer_trimming=True`.
 
 ## 5. View the results
 
