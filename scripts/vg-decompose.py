@@ -163,6 +163,14 @@ def main():
 	pools['mut'] = pools.apply(lambda r: str(r['pos'])+":"+r['ref']+">"+r["alt"], axis=1)
 	pools['af'] = pools['adalt']/pools['dp']
 	
+	# check for samples with zero coverage
+	cov = pools.groupby('sample').agg('sum')
+	zero_cov_samples = cov[cov.dp==0].index
+	if len(zero_cov_samples) > 0:
+		print('warning: dropping samples with zero coverage: '+str(zero_cov_samples))
+		pools = pools[ ~( pools['sample'].isin(zero_cov_samples) ) ]
+		pool_tags = sorted(pools['sample'].unique())
+	
 	# check missing muts
 	missing_muts = set(marker_snps_list) - set(pools.mut)
 	if len(missing_muts) > 0:
