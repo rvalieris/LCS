@@ -17,13 +17,11 @@ rule sample_list:
 	output: temp('outputs/ucsc-vcf/{x}.sample-list')
 	params: lin=lambda wc: get_lineages(wc.x)
 	run:
-		h = gzip.open(input[0], 'rt')
+		h = pandas.read_csv(input[0], sep='\t')
 		out = open(output[0], 'wt')
 		ls = params.lin.split(",")
-		for l in h:
-		        rows = l.rstrip().split("\t")
-		        if len(rows)==9 and rows[8] in ls:
-		                out.write(rows[0]+"\n")
+		rows = h.loc[h['pangolin_lineage'].isin(ls)]
+		out.write("\n".join(rows['strain'])+"\n")
 
 rule lineage_vcf:
 	input: pb=PB, l='outputs/ucsc-vcf/{x}.sample-list'
