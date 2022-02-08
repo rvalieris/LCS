@@ -58,12 +58,12 @@ Choose one of these 3 options:
     1. pango-designation:
         ```bash
         mkdir -p outputs/variants_table &&
-        cp data/pre-generated-marker-tables/pango-designation-markers-v1.2.60.tsv outputs/variants_table/pango-markers-table.tsv
+        zcat data/pre-generated-marker-tables/pango-designation-markers-v1.2.60.tsv.gz > outputs/variants_table/pango-markers-table.tsv
         ```
     2. ucsc:
         ```bash
         mkdir -p outputs/variants_table &&
-        cp data/pre-generated-marker-tables/ucsc-markers-2021-08-19.tsv outputs/variants_table/ucsc-markers-table.tsv
+        zcat data/pre-generated-marker-tables/ucsc-markers-2021-08-19.tsv.gz > outputs/variants_table/ucsc-markers-table.tsv
         ```
 
 
