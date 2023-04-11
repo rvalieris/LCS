@@ -159,7 +159,7 @@ def main():
 	
 	# pool data
 	pools = pandas.read_csv(args.pools, sep='\t')
-	pool_tags = sorted(pools['sample'].unique())
+	pool_tags = sorted(map(str, pools['sample'].unique()))
 	pools['mut'] = pools.apply(lambda r: str(r['pos'])+":"+r['ref']+">"+r["alt"], axis=1)
 	pools['af'] = pools['adalt']/pools['dp']
 	
@@ -169,7 +169,7 @@ def main():
 	if len(zero_cov_samples) > 0:
 		print('warning: dropping samples with zero coverage: '+str(zero_cov_samples))
 		pools = pools[ ~( pools['sample'].isin(zero_cov_samples) ) ]
-		pool_tags = sorted(pools['sample'].unique())
+		pool_tags = sorted(map(str, pools['sample'].unique()))
 	
 	# check missing muts
 	missing_muts = set(marker_snps_list) - set(pools.mut)
